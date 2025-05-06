@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package platform_subscriber;
+
+option go_package = "Streamfony/platform-subscriber-sdk/subscriber";
+
+import "google/protobuf/empty.proto";
+
+service PlatformSubscriber {
+    rpc Subscribe(Target) returns (OkResponse) {}
+    rpc Heartbeat(Target) returns (OkResponse) {}
+    rpc Unsubscribe(Target) returns (OkResponse) {}
+    rpc GetActiveCount(google.protobuf.Empty) returns (GetActiveCountResponse) {}
+    rpc GetActiveList(google.protobuf.Empty) returns (GetActiveListResponse) {}
+}
+
+message Target {
+    uint64 user_id = 1;
+    optional string additional_info = 2;
+}
+
+message OkResponse {
+    string instance_id = 1;
+    bool is_ok = 2;
+}
+
+message GetActiveCountResponse {
+    uint64 count = 1;
+}
+
+message GetActiveListResponse {
+    repeated Target targets = 1;
+}
