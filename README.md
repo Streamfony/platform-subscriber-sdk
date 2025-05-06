@@ -7,3 +7,9 @@
 ```bash
 go generate .
 ```
+
+## Использование
+
+```bash
+go get github.com/Streamfony/platform-subscriber-sdk
+```

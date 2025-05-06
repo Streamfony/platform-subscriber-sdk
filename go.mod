@@ -1,4 +1,4 @@
-module Streamfony/platform-subscriber-sdk
+module github.com/Streamfony/platform-subscriber-sdk
 
 go 1.24.2
 
