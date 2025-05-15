@@ -1,10 +1,20 @@
 package events
 
+import (
+	"encoding/json"
+)
+
 type Event struct {
 	Platform string         `json:"platform"`
 	Event    string         `json:"event"`
 	UserID   uint64         `json:"user_id"`
 	Data     map[string]any `json:"data"`
+}
+
+func (e *Event) Json() []byte {
+	jsonEvent, _ := json.Marshal(e)
+
+	return jsonEvent
 }
 
 const (
