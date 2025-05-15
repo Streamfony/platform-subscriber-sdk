@@ -20,6 +20,8 @@ func (e *Event) Json() []byte {
 const (
 	connected    = "connected"
 	disconnected = "disconnected"
+	nodeStarted  = "node_started"
+	nodeStopped  = "node_stopped"
 )
 
 func Connected(platform string, userID uint64) Event {
@@ -37,5 +39,27 @@ func Disconnected(platform string, userID uint64) Event {
 		Event:    disconnected,
 		Data:     map[string]any{},
 		UserID:   userID,
+	}
+}
+
+func NodeStarted(platform string, instanceUrl string) Event {
+	return Event{
+		Platform: platform,
+		Event:    nodeStarted,
+		Data: map[string]any{
+			"instance_url": instanceUrl,
+		},
+		UserID: 0,
+	}
+}
+
+func NodeStopped(platform string, instanceUrl string) Event {
+	return Event{
+		Platform: platform,
+		Event:    nodeStopped,
+		Data: map[string]any{
+			"instance_url": instanceUrl,
+		},
+		UserID: 0,
 	}
 }
