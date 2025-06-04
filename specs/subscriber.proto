@@ -18,6 +18,7 @@ message HeartbeatRequest {
 message MarkDisconnectedRequest {
     PlatformInfo platform_info = 1;
     Target target = 2;
+    int64 amount_of_connections = 3;
 }
 // endregion
 

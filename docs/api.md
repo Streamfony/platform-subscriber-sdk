@@ -69,6 +69,7 @@ region Responses
 | ----- | ---- | ----- | ----------- |
 | platform_info | [PlatformInfo](#platform_subscriber-PlatformInfo) |  |  |
 | target | [Target](#platform_subscriber-Target) |  |  |
+| amount_of_connections | [int64](#int64) |  |  |
 
 
 
