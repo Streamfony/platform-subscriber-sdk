@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,22 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PlatformSubscriber_Subscribe_FullMethodName      = "/platform_subscriber.PlatformSubscriber/Subscribe"
-	PlatformSubscriber_Heartbeat_FullMethodName      = "/platform_subscriber.PlatformSubscriber/Heartbeat"
-	PlatformSubscriber_Unsubscribe_FullMethodName    = "/platform_subscriber.PlatformSubscriber/Unsubscribe"
-	PlatformSubscriber_GetActiveCount_FullMethodName = "/platform_subscriber.PlatformSubscriber/GetActiveCount"
-	PlatformSubscriber_GetActiveList_FullMethodName  = "/platform_subscriber.PlatformSubscriber/GetActiveList"
+	PlatformSubscriber_Heartbeat_FullMethodName        = "/platform_subscriber.PlatformSubscriber/Heartbeat"
+	PlatformSubscriber_MarkDisconnected_FullMethodName = "/platform_subscriber.PlatformSubscriber/MarkDisconnected"
 )
 
 // PlatformSubscriberClient is the client API for PlatformSubscriber service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PlatformSubscriberClient interface {
-	Subscribe(ctx context.Context, in *Target, opts ...grpc.CallOption) (*OkResponse, error)
-	Heartbeat(ctx context.Context, in *Target, opts ...grpc.CallOption) (*OkResponse, error)
-	Unsubscribe(ctx context.Context, in *Target, opts ...grpc.CallOption) (*OkResponse, error)
-	GetActiveCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetActiveCountResponse, error)
-	GetActiveList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetActiveListResponse, error)
+	Heartbeat(ctx context.Context, in *HeartbeatRequest, opts ...grpc.CallOption) (*HeartbeatResponse, error)
+	MarkDisconnected(ctx context.Context, in *MarkDisconnectedRequest, opts ...grpc.CallOption) (*MarkDisconnectedResponse, error)
 }
 
 type platformSubscriberClient struct {
@@ -46,19 +39,9 @@ func NewPlatformSubscriberClient(cc grpc.ClientConnInterface) PlatformSubscriber
 	return &platformSubscriberClient{cc}
 }
 
-func (c *platformSubscriberClient) Subscribe(ctx context.Context, in *Target, opts ...grpc.CallOption) (*OkResponse, error) {
+func (c *platformSubscriberClient) Heartbeat(ctx context.Context, in *HeartbeatRequest, opts ...grpc.CallOption) (*HeartbeatResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(OkResponse)
-	err := c.cc.Invoke(ctx, PlatformSubscriber_Subscribe_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *platformSubscriberClient) Heartbeat(ctx context.Context, in *Target, opts ...grpc.CallOption) (*OkResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(OkResponse)
+	out := new(HeartbeatResponse)
 	err := c.cc.Invoke(ctx, PlatformSubscriber_Heartbeat_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -66,30 +49,10 @@ func (c *platformSubscriberClient) Heartbeat(ctx context.Context, in *Target, op
 	return out, nil
 }
 
-func (c *platformSubscriberClient) Unsubscribe(ctx context.Context, in *Target, opts ...grpc.CallOption) (*OkResponse, error) {
+func (c *platformSubscriberClient) MarkDisconnected(ctx context.Context, in *MarkDisconnectedRequest, opts ...grpc.CallOption) (*MarkDisconnectedResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(OkResponse)
-	err := c.cc.Invoke(ctx, PlatformSubscriber_Unsubscribe_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *platformSubscriberClient) GetActiveCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetActiveCountResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetActiveCountResponse)
-	err := c.cc.Invoke(ctx, PlatformSubscriber_GetActiveCount_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *platformSubscriberClient) GetActiveList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetActiveListResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetActiveListResponse)
-	err := c.cc.Invoke(ctx, PlatformSubscriber_GetActiveList_FullMethodName, in, out, cOpts...)
+	out := new(MarkDisconnectedResponse)
+	err := c.cc.Invoke(ctx, PlatformSubscriber_MarkDisconnected_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,11 +63,8 @@ func (c *platformSubscriberClient) GetActiveList(ctx context.Context, in *emptyp
 // All implementations must embed UnimplementedPlatformSubscriberServer
 // for forward compatibility.
 type PlatformSubscriberServer interface {
-	Subscribe(context.Context, *Target) (*OkResponse, error)
-	Heartbeat(context.Context, *Target) (*OkResponse, error)
-	Unsubscribe(context.Context, *Target) (*OkResponse, error)
-	GetActiveCount(context.Context, *emptypb.Empty) (*GetActiveCountResponse, error)
-	GetActiveList(context.Context, *emptypb.Empty) (*GetActiveListResponse, error)
+	Heartbeat(context.Context, *HeartbeatRequest) (*HeartbeatResponse, error)
+	MarkDisconnected(context.Context, *MarkDisconnectedRequest) (*MarkDisconnectedResponse, error)
 	mustEmbedUnimplementedPlatformSubscriberServer()
 }
 
@@ -115,20 +75,11 @@ type PlatformSubscriberServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPlatformSubscriberServer struct{}
 
-func (UnimplementedPlatformSubscriberServer) Subscribe(context.Context, *Target) (*OkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Subscribe not implemented")
-}
-func (UnimplementedPlatformSubscriberServer) Heartbeat(context.Context, *Target) (*OkResponse, error) {
+func (UnimplementedPlatformSubscriberServer) Heartbeat(context.Context, *HeartbeatRequest) (*HeartbeatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Heartbeat not implemented")
 }
-func (UnimplementedPlatformSubscriberServer) Unsubscribe(context.Context, *Target) (*OkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Unsubscribe not implemented")
-}
-func (UnimplementedPlatformSubscriberServer) GetActiveCount(context.Context, *emptypb.Empty) (*GetActiveCountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetActiveCount not implemented")
-}
-func (UnimplementedPlatformSubscriberServer) GetActiveList(context.Context, *emptypb.Empty) (*GetActiveListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetActiveList not implemented")
+func (UnimplementedPlatformSubscriberServer) MarkDisconnected(context.Context, *MarkDisconnectedRequest) (*MarkDisconnectedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MarkDisconnected not implemented")
 }
 func (UnimplementedPlatformSubscriberServer) mustEmbedUnimplementedPlatformSubscriberServer() {}
 func (UnimplementedPlatformSubscriberServer) testEmbeddedByValue()                            {}
@@ -151,26 +102,8 @@ func RegisterPlatformSubscriberServer(s grpc.ServiceRegistrar, srv PlatformSubsc
 	s.RegisterService(&PlatformSubscriber_ServiceDesc, srv)
 }
 
-func _PlatformSubscriber_Subscribe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Target)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PlatformSubscriberServer).Subscribe(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PlatformSubscriber_Subscribe_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlatformSubscriberServer).Subscribe(ctx, req.(*Target))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _PlatformSubscriber_Heartbeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Target)
+	in := new(HeartbeatRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -182,61 +115,25 @@ func _PlatformSubscriber_Heartbeat_Handler(srv interface{}, ctx context.Context,
 		FullMethod: PlatformSubscriber_Heartbeat_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlatformSubscriberServer).Heartbeat(ctx, req.(*Target))
+		return srv.(PlatformSubscriberServer).Heartbeat(ctx, req.(*HeartbeatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PlatformSubscriber_Unsubscribe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Target)
+func _PlatformSubscriber_MarkDisconnected_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MarkDisconnectedRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PlatformSubscriberServer).Unsubscribe(ctx, in)
+		return srv.(PlatformSubscriberServer).MarkDisconnected(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PlatformSubscriber_Unsubscribe_FullMethodName,
+		FullMethod: PlatformSubscriber_MarkDisconnected_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlatformSubscriberServer).Unsubscribe(ctx, req.(*Target))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PlatformSubscriber_GetActiveCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PlatformSubscriberServer).GetActiveCount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PlatformSubscriber_GetActiveCount_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlatformSubscriberServer).GetActiveCount(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PlatformSubscriber_GetActiveList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PlatformSubscriberServer).GetActiveList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PlatformSubscriber_GetActiveList_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PlatformSubscriberServer).GetActiveList(ctx, req.(*emptypb.Empty))
+		return srv.(PlatformSubscriberServer).MarkDisconnected(ctx, req.(*MarkDisconnectedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -249,24 +146,12 @@ var PlatformSubscriber_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*PlatformSubscriberServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Subscribe",
-			Handler:    _PlatformSubscriber_Subscribe_Handler,
-		},
-		{
 			MethodName: "Heartbeat",
 			Handler:    _PlatformSubscriber_Heartbeat_Handler,
 		},
 		{
-			MethodName: "Unsubscribe",
-			Handler:    _PlatformSubscriber_Unsubscribe_Handler,
-		},
-		{
-			MethodName: "GetActiveCount",
-			Handler:    _PlatformSubscriber_GetActiveCount_Handler,
-		},
-		{
-			MethodName: "GetActiveList",
-			Handler:    _PlatformSubscriber_GetActiveList_Handler,
+			MethodName: "MarkDisconnected",
+			Handler:    _PlatformSubscriber_MarkDisconnected_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

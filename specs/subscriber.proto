@@ -4,30 +4,53 @@ package platform_subscriber;
 
 option go_package = "Streamfony/platform-subscriber-sdk/subscriber";
 
-import "google/protobuf/empty.proto";
-
 service PlatformSubscriber {
-    rpc Subscribe(Target) returns (OkResponse) {}
-    rpc Heartbeat(Target) returns (OkResponse) {}
-    rpc Unsubscribe(Target) returns (OkResponse) {}
-    rpc GetActiveCount(google.protobuf.Empty) returns (GetActiveCountResponse) {}
-    rpc GetActiveList(google.protobuf.Empty) returns (GetActiveListResponse) {}
+    rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse) {} // Heartbeat request, that allows to recieve new tasks for subscription
+    rpc MarkDisconnected(MarkDisconnectedRequest) returns (MarkDisconnectedResponse) {} // Mark disconnected request, that allows to mark a connection as disconnected
 }
 
+// region Requests
+message HeartbeatRequest {
+    PlatformInfo platform_info = 1;
+    int64 amount_of_connections = 2;
+}
+
+message MarkDisconnectedRequest {
+    PlatformInfo platform_info = 1;
+    Target target = 2;
+}
+// endregion
+
+// region Responses
+message HeartbeatResponse {
+    bool is_ok = 1;
+    repeated Task tasks = 2;
+}
+
+message MarkDisconnectedResponse {
+    bool is_ok = 1;
+}
+// endregion
+
+// region Enums
+enum TaskAction {
+    SUBSCRIBE = 0;
+    UNSUBSCRIBE = 1;
+}
+// endregion
+
+// region Parts
+message PlatformInfo {
+    string platform = 1;
+    string type = 2;
+    string instance_id = 3;
+}
+message Task {
+    TaskAction action = 1;
+    Target target = 2;
+}
 message Target {
     uint64 user_id = 1;
     optional string additional_info = 2;
 }
-
-message OkResponse {
-    string instance_id = 1;
-    bool is_ok = 2;
-}
-
-message GetActiveCountResponse {
-    uint64 count = 1;
-}
-
-message GetActiveListResponse {
-    repeated Target targets = 1;
-}
+// endregion

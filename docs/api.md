@@ -4,10 +4,15 @@
 ## Table of Contents
 
 - [subscriber.proto](#subscriber-proto)
-    - [GetActiveCountResponse](#platform_subscriber-GetActiveCountResponse)
-    - [GetActiveListResponse](#platform_subscriber-GetActiveListResponse)
-    - [OkResponse](#platform_subscriber-OkResponse)
+    - [HeartbeatRequest](#platform_subscriber-HeartbeatRequest)
+    - [HeartbeatResponse](#platform_subscriber-HeartbeatResponse)
+    - [MarkDisconnectedRequest](#platform_subscriber-MarkDisconnectedRequest)
+    - [MarkDisconnectedResponse](#platform_subscriber-MarkDisconnectedResponse)
+    - [PlatformInfo](#platform_subscriber-PlatformInfo)
     - [Target](#platform_subscriber-Target)
+    - [Task](#platform_subscriber-Task)
+  
+    - [TaskAction](#platform_subscriber-TaskAction)
   
     - [PlatformSubscriber](#platform_subscriber-PlatformSubscriber)
   
@@ -22,46 +27,80 @@
 
 
 
-<a name="platform_subscriber-GetActiveCountResponse"></a>
+<a name="platform_subscriber-HeartbeatRequest"></a>
 
-### GetActiveCountResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| count | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="platform_subscriber-GetActiveListResponse"></a>
-
-### GetActiveListResponse
-
+### HeartbeatRequest
+region Requests
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| targets | [Target](#platform_subscriber-Target) | repeated |  |
+| platform_info | [PlatformInfo](#platform_subscriber-PlatformInfo) |  |  |
+| amount_of_connections | [int64](#int64) |  |  |
 
 
 
 
 
 
-<a name="platform_subscriber-OkResponse"></a>
+<a name="platform_subscriber-HeartbeatResponse"></a>
 
-### OkResponse
-
+### HeartbeatResponse
+region Responses
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| instance_id | [string](#string) |  |  |
 | is_ok | [bool](#bool) |  |  |
+| tasks | [Task](#platform_subscriber-Task) | repeated |  |
+
+
+
+
+
+
+<a name="platform_subscriber-MarkDisconnectedRequest"></a>
+
+### MarkDisconnectedRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| platform_info | [PlatformInfo](#platform_subscriber-PlatformInfo) |  |  |
+| target | [Target](#platform_subscriber-Target) |  |  |
+
+
+
+
+
+
+<a name="platform_subscriber-MarkDisconnectedResponse"></a>
+
+### MarkDisconnectedResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| is_ok | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="platform_subscriber-PlatformInfo"></a>
+
+### PlatformInfo
+region Parts
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| platform | [string](#string) |  |  |
+| type | [string](#string) |  |  |
+| instance_id | [string](#string) |  |  |
 
 
 
@@ -83,7 +122,35 @@
 
 
 
+
+<a name="platform_subscriber-Task"></a>
+
+### Task
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| action | [TaskAction](#platform_subscriber-TaskAction) |  |  |
+| target | [Target](#platform_subscriber-Target) |  |  |
+
+
+
+
+
  
+
+
+<a name="platform_subscriber-TaskAction"></a>
+
+### TaskAction
+region Enums
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| SUBSCRIBE | 0 |  |
+| UNSUBSCRIBE | 1 |  |
+
 
  
 
@@ -97,11 +164,8 @@
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| Subscribe | [Target](#platform_subscriber-Target) | [OkResponse](#platform_subscriber-OkResponse) |  |
-| Heartbeat | [Target](#platform_subscriber-Target) | [OkResponse](#platform_subscriber-OkResponse) |  |
-| Unsubscribe | [Target](#platform_subscriber-Target) | [OkResponse](#platform_subscriber-OkResponse) |  |
-| GetActiveCount | [.google.protobuf.Empty](#google-protobuf-Empty) | [GetActiveCountResponse](#platform_subscriber-GetActiveCountResponse) |  |
-| GetActiveList | [.google.protobuf.Empty](#google-protobuf-Empty) | [GetActiveListResponse](#platform_subscriber-GetActiveListResponse) |  |
+| Heartbeat | [HeartbeatRequest](#platform_subscriber-HeartbeatRequest) | [HeartbeatResponse](#platform_subscriber-HeartbeatResponse) |  |
+| MarkDisconnected | [MarkDisconnectedRequest](#platform_subscriber-MarkDisconnectedRequest) | [MarkDisconnectedResponse](#platform_subscriber-MarkDisconnectedResponse) |  |
 
  
 
