@@ -1,4 +1,4 @@
-package subscriber_command
+package platform_events
 
 type Action string
 
@@ -7,7 +7,7 @@ const (
 	ActionUnsubscribe Action = "unsubscribe"
 )
 
-type Command struct {
+type Event struct {
 	Platform     string `json:"platform"`
 	PlatformType string `json:"platform_type"`
 
@@ -18,20 +18,20 @@ type Command struct {
 	Error error `json:"error"`
 }
 
-type CommandFactory struct {
+type EventFactory struct {
 	platform     string
 	platformType string
 }
 
-func NewFactory(platform, platformType string) *CommandFactory {
-	return &CommandFactory{
+func NewFactory(platform, platformType string) *EventFactory {
+	return &EventFactory{
 		platform:     platform,
 		platformType: platformType,
 	}
 }
 
-func (c *CommandFactory) SubscribeCommand(userID uint64, additionalInfo *string) Command {
-	return Command{
+func (c *EventFactory) SubscribeEvent(userID uint64, additionalInfo *string) Event {
+	return Event{
 		Platform:       c.platform,
 		PlatformType:   c.platformType,
 		Action:         ActionSubscribe,
@@ -40,8 +40,8 @@ func (c *CommandFactory) SubscribeCommand(userID uint64, additionalInfo *string)
 	}
 }
 
-func (c *CommandFactory) UnsubscribeCommand(userID uint64, additionalInfo *string, err error) Command {
-	return Command{
+func (c *EventFactory) UnsubscribeEvent(userID uint64, additionalInfo *string, err error) Event {
+	return Event{
 		Platform:       c.platform,
 		PlatformType:   c.platformType,
 		Action:         ActionUnsubscribe,
