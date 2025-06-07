@@ -6,7 +6,7 @@ import (
 
 	"github.com/Streamfony/lib-logger/logger"
 	watermillLogger "github.com/Streamfony/lib-logger/watermill-logger"
-	"github.com/ThreeDotsLabs/watermill-kafka/pkg/kafka"
+	"github.com/ThreeDotsLabs/watermill-kafka/v3/pkg/kafka"
 	"github.com/ThreeDotsLabs/watermill/message"
 )
 
@@ -22,9 +22,8 @@ func NewSubscriber(pubsubAddress string, pubsubGroup string, logger logger.Logge
 		kafka.SubscriberConfig{
 			Brokers:       []string{pubsubAddress},
 			ConsumerGroup: pubsubGroup,
+			Unmarshaler:   kafka.DefaultMarshaler{},
 		},
-		nil,
-		nil,
 		watermillLogger.New(logger.Named("subscriber.platform_events")),
 	)
 	if err != nil {
@@ -51,16 +50,16 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 	for {
 		select {
 		case <-ctx.Done():
-			s.logger.Info("context cancelled, stopping subscriber")
+			l.Info("context cancelled, stopping subscriber")
 			return ctx.Err()
 		case msg, ok := <-messages:
 			if !ok {
-				s.logger.Info("messages channel closed")
+				l.Info("messages channel closed")
 				return nil
 			}
 
 			if msg == nil {
-				s.logger.Error("received nil message")
+				l.Error("received nil message")
 				continue
 			}
 
@@ -72,7 +71,16 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 			if err := json.Unmarshal(msg.Payload, &event); err != nil {
 				l.Error("failed to unmarshal event",
 					logger.F("uuid", msg.UUID),
+					logger.F("payload", string(msg.Payload)),
 					logger.Err(err))
+				msg.Nack()
+				continue
+			}
+
+			if event.Platform == "" || event.PlatformType == "" || event.Action == "" || event.UserID == 0 {
+				l.Error("invalid event data",
+					logger.F("uuid", msg.UUID),
+					logger.F("event", event))
 				msg.Nack()
 				continue
 			}
@@ -80,6 +88,7 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 			if err := handler(ctx, event); err != nil {
 				l.Error("failed to handle event",
 					logger.F("uuid", msg.UUID),
+					logger.F("event", event),
 					logger.Err(err))
 				msg.Nack()
 				continue
