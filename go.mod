@@ -3,7 +3,7 @@ module github.com/Streamfony/platform-subscriber-sdk
 go 1.24.2
 
 require (
-	github.com/Streamfony/lib-logger v1.0.2
+	github.com/Streamfony/lib-logger v1.0.3
 	github.com/google/uuid v1.6.0
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.6
