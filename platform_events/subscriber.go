@@ -62,6 +62,7 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 				l.Error("received nil message")
 				continue
 			}
+			msg.Ack()
 
 			l.Debug("received message",
 				logger.F("uuid", msg.UUID),
@@ -73,7 +74,6 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 					logger.F("uuid", msg.UUID),
 					logger.F("payload", string(msg.Payload)),
 					logger.Err(err))
-				msg.Nack()
 				continue
 			}
 
@@ -81,7 +81,6 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 				l.Error("invalid event data",
 					logger.F("uuid", msg.UUID),
 					logger.F("event", event))
-				msg.Nack()
 				continue
 			}
 
@@ -90,11 +89,8 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 					logger.F("uuid", msg.UUID),
 					logger.F("event", event),
 					logger.Err(err))
-				msg.Nack()
 				continue
 			}
-
-			msg.Ack()
 		}
 	}
 }
