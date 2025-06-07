@@ -7,8 +7,8 @@ github.com/Shopify/sarama v1.23.1 h1:XxJBCZEoWJtoWjf/xRbmGUpAmTZGnuuF0ON0EvxxBrs
 github.com/Shopify/sarama v1.23.1/go.mod h1:XLH1GYJnLVE0XCr6KdJGVJRTwY30moWNJ4sERjXX6fs=
 github.com/Shopify/toxiproxy v2.1.4+incompatible h1:TKdv8HiTLgE5wdJuEML90aBgNWsokNbMijUGhmcoBJc=
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
-github.com/Streamfony/lib-logger v1.0.3 h1:GwUmQhqpz6ufQnvr1OZCgXb5KRZEmGsMDrjJTRm69A4=
-github.com/Streamfony/lib-logger v1.0.3/go.mod h1:o8hsSoHemq/uZN52sJ7jWQJf/Rg+yvV9TIc6KwLeAMU=
+github.com/Streamfony/lib-logger v1.0.4 h1:86L8nI8SGlOTDuZtltd/pcuxTVdnPpXpURAsTQ3ZEKI=
+github.com/Streamfony/lib-logger v1.0.4/go.mod h1:o8hsSoHemq/uZN52sJ7jWQJf/Rg+yvV9TIc6KwLeAMU=
 github.com/ThreeDotsLabs/watermill v1.0.0-rc.2/go.mod h1:gjVFKc8aN+vmEHw3pA0kh4mmuwHe02nyfghb6IWWiKE=
 github.com/ThreeDotsLabs/watermill v1.4.6 h1:rWoXlxdBgUyg/bZ3OO0pON+nESVd9r6tnLTgkZ6CYrU=
 github.com/ThreeDotsLabs/watermill v1.4.6/go.mod h1:lBnrLbxOjeMRgcJbv+UiZr8Ylz8RkJ4m6i/VN/Nk+to=
