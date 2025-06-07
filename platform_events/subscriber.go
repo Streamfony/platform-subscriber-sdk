@@ -39,9 +39,14 @@ func NewSubscriber(pubsubAddress string, pubsubGroup string, logger logger.Logge
 
 func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Context, event Event) error) error {
 	messages, err := s.consumer.Subscribe(ctx, topic)
+	l := s.logger.WithFields(logger.F("topic", topic))
 	if err != nil {
+		l.Error("failed to subscribe to topic",
+			logger.Err(err))
 		return err
 	}
+
+	l.Info("successfully subscribed to topic")
 
 	for {
 		select {
@@ -54,14 +59,29 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 				return nil
 			}
 
+			if msg == nil {
+				s.logger.Error("received nil message")
+				continue
+			}
+
+			l.Debug("received message",
+				logger.F("uuid", msg.UUID),
+				logger.F("payload", string(msg.Payload)))
+
 			var event Event
 			if err := json.Unmarshal(msg.Payload, &event); err != nil {
-				s.logger.Error("failed to unmarshal event", logger.Err(err))
+				l.Error("failed to unmarshal event",
+					logger.F("uuid", msg.UUID),
+					logger.Err(err))
+				msg.Nack()
 				continue
 			}
 
 			if err := handler(ctx, event); err != nil {
-				s.logger.Error("failed to handle event", logger.Err(err))
+				l.Error("failed to handle event",
+					logger.F("uuid", msg.UUID),
+					logger.Err(err))
+				msg.Nack()
 				continue
 			}
 
