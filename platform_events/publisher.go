@@ -48,13 +48,13 @@ func (p *Publisher) Publish(ctx context.Context, event Event) error {
 }
 
 func (p *Publisher) PublishSubscribeEvent(ctx context.Context, userID uint64, additionalInfo *string) error {
-	p.logger.Debug("publishing subscribe event", logger.F("user_id", userID), logger.F("additional_info", *additionalInfo))
+	p.logger.Debug("publishing subscribe event", logger.F("user_id", userID), logger.F("additional_info", additionalInfo))
 	event := p.factory.SubscribeEvent(userID, additionalInfo)
 	return p.Publish(ctx, event)
 }
 
 func (p *Publisher) PublishUnsubscribeEvent(ctx context.Context, userID uint64, additionalInfo *string, err error) error {
-	p.logger.Debug("publishing unsubscribe event", logger.F("user_id", userID), logger.F("additional_info", *additionalInfo), logger.Err(err))
+	p.logger.Debug("publishing unsubscribe event", logger.F("user_id", userID), logger.F("additional_info", additionalInfo), logger.Err(err))
 	event := p.factory.UnsubscribeEvent(userID, additionalInfo, err)
 	return p.Publish(ctx, event)
 }
