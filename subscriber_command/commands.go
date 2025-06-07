@@ -14,6 +14,8 @@ type Command struct {
 	Action         Action  `json:"action"`
 	UserID         uint64  `json:"user_id"`
 	AdditionalInfo *string `json:"additional_info"`
+
+	Error error `json:"error"`
 }
 
 type CommandFactory struct {
@@ -38,12 +40,13 @@ func (c *CommandFactory) SubscribeCommand(userID uint64, additionalInfo *string)
 	}
 }
 
-func (c *CommandFactory) UnsubscribeCommand(userID uint64, additionalInfo *string) Command {
+func (c *CommandFactory) UnsubscribeCommand(userID uint64, additionalInfo *string, err error) Command {
 	return Command{
 		Platform:       c.platform,
 		PlatformType:   c.platformType,
 		Action:         ActionUnsubscribe,
 		UserID:         userID,
 		AdditionalInfo: additionalInfo,
+		Error:          err,
 	}
 }
