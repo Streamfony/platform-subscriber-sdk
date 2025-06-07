@@ -4,20 +4,20 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/Streamfony/lib-logger/logger"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-kafka/pkg/kafka"
 	"github.com/ThreeDotsLabs/watermill/message"
-	"go.uber.org/zap"
 )
 
 type Subscriber struct {
 	consumer message.Subscriber
-	logger   *zap.Logger
+	logger   logger.Logger
 }
 
 const topic = "platform_connections_events"
 
-func NewSubscriber(pubsubAddress string, pubsubGroup string, logger *zap.Logger) (*Subscriber, error) {
+func NewSubscriber(pubsubAddress string, pubsubGroup string, logger logger.Logger) (*Subscriber, error) {
 	consumer, err := kafka.NewSubscriber(
 		kafka.SubscriberConfig{
 			Brokers:       []string{pubsubAddress},
@@ -56,12 +56,12 @@ func (s *Subscriber) Subscribe(ctx context.Context, handler func(ctx context.Con
 
 			var event Event
 			if err := json.Unmarshal(msg.Payload, &event); err != nil {
-				s.logger.Error("failed to unmarshal event", zap.Error(err))
+				s.logger.Error("failed to unmarshal event", logger.Err(err))
 				continue
 			}
 
 			if err := handler(ctx, event); err != nil {
-				s.logger.Error("failed to handle event", zap.Error(err))
+				s.logger.Error("failed to handle event", logger.Err(err))
 				continue
 			}
 

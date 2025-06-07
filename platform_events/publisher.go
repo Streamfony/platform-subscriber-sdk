@@ -4,20 +4,20 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/Streamfony/lib-logger/logger"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-kafka/v3/pkg/kafka"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 )
 
 type Publisher struct {
 	factory   *EventFactory
 	publisher message.Publisher
-	logger    *zap.Logger
+	logger    logger.Logger
 }
 
-func NewPublisher(platform, platformType, pubsubAddress string, logger *zap.Logger) (*Publisher, error) {
+func NewPublisher(platform, platformType, pubsubAddress string, logger logger.Logger) (*Publisher, error) {
 	publisher, err := kafka.NewPublisher(
 		kafka.PublisherConfig{
 			Brokers:   []string{pubsubAddress},
@@ -48,11 +48,13 @@ func (p *Publisher) Publish(ctx context.Context, event Event) error {
 }
 
 func (p *Publisher) PublishSubscribeEvent(ctx context.Context, userID uint64, additionalInfo *string) error {
+	p.logger.Debug("publishing subscribe event", logger.F("user_id", userID), logger.F("additional_info", *additionalInfo))
 	event := p.factory.SubscribeEvent(userID, additionalInfo)
 	return p.Publish(ctx, event)
 }
 
 func (p *Publisher) PublishUnsubscribeEvent(ctx context.Context, userID uint64, additionalInfo *string, err error) error {
+	p.logger.Debug("publishing unsubscribe event", logger.F("user_id", userID), logger.F("additional_info", *additionalInfo), logger.Err(err))
 	event := p.factory.UnsubscribeEvent(userID, additionalInfo, err)
 	return p.Publish(ctx, event)
 }
