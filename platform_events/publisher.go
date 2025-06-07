@@ -11,6 +11,46 @@ import (
 	"github.com/google/uuid"
 )
 
+type watermillLoggerAdapter struct {
+	logger logger.Logger
+}
+
+func (l *watermillLoggerAdapter) Error(msg string, err error, fields watermill.LogFields) {
+	l.logger.Error(msg, append([]logger.Field{logger.Err(err)}, convertFields(fields)...)...)
+}
+
+func (l *watermillLoggerAdapter) Info(msg string, fields watermill.LogFields) {
+	l.logger.Info(msg, convertFields(fields)...)
+}
+
+func (l *watermillLoggerAdapter) Debug(msg string, fields watermill.LogFields) {
+	l.logger.Debug(msg, convertFields(fields)...)
+}
+
+func (l *watermillLoggerAdapter) Trace(msg string, fields watermill.LogFields) {
+	l.logger.Debug(msg, convertFields(fields)...)
+}
+
+func (l *watermillLoggerAdapter) With(fields watermill.LogFields) watermill.LoggerAdapter {
+	return &watermillLoggerAdapter{logger: l.logger.WithFields(l.ConvertFields(fields)...)}
+}
+
+func (l *watermillLoggerAdapter) ConvertFields(fields watermill.LogFields) []logger.Field {
+	result := make([]logger.Field, 0, len(fields))
+	for k, v := range fields {
+		result = append(result, logger.F(k, v))
+	}
+	return result
+}
+
+func convertFields(fields watermill.LogFields) []logger.Field {
+	result := make([]logger.Field, 0, len(fields))
+	for k, v := range fields {
+		result = append(result, logger.F(k, v))
+	}
+	return result
+}
+
 type Publisher struct {
 	factory   *EventFactory
 	publisher message.Publisher
@@ -23,7 +63,7 @@ func NewPublisher(platform, platformType, pubsubAddress string, logger logger.Lo
 			Brokers:   []string{pubsubAddress},
 			Marshaler: kafka.DefaultMarshaler{},
 		},
-		watermill.NewStdLogger(false, false),
+		&watermillLoggerAdapter{logger: logger},
 	)
 	if err != nil {
 		return nil, err

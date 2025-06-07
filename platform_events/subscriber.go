@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/Streamfony/lib-logger/logger"
-	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-kafka/pkg/kafka"
 	"github.com/ThreeDotsLabs/watermill/message"
 )
@@ -25,7 +24,7 @@ func NewSubscriber(pubsubAddress string, pubsubGroup string, logger logger.Logge
 		},
 		nil,
 		nil,
-		watermill.NewStdLogger(false, false),
+		&watermillLoggerAdapter{logger: logger.Named("subscriber.platform_events")},
 	)
 	if err != nil {
 		return nil, err
