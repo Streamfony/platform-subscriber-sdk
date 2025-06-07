@@ -15,7 +15,7 @@ type Event struct {
 	UserID         uint64  `json:"user_id"`
 	AdditionalInfo *string `json:"additional_info"`
 
-	Error error `json:"error"`
+	Error *string `json:"error"`
 }
 
 type EventFactory struct {
@@ -41,12 +41,18 @@ func (c *EventFactory) SubscribeEvent(userID uint64, additionalInfo *string) Eve
 }
 
 func (c *EventFactory) UnsubscribeEvent(userID uint64, additionalInfo *string, err error) Event {
+	var errorStr *string
+	if err != nil {
+		errMsg := err.Error()
+		errorStr = &errMsg
+	}
+
 	return Event{
 		Platform:       c.platform,
 		PlatformType:   c.platformType,
 		Action:         ActionUnsubscribe,
 		UserID:         userID,
 		AdditionalInfo: additionalInfo,
-		Error:          err,
+		Error:          errorStr,
 	}
 }
